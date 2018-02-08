@@ -1,15 +1,10 @@
-package main
+package prometheus_helper
 
 import (
 	"reflect"
 	"strings"
 	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
-)
-
-var (
-	// Makefile build
-	version = ""
 )
 
 type StructMeta struct {

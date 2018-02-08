@@ -1,4 +1,4 @@
-package main
+package prometheus_helper
 
 import (
 	"testing"
