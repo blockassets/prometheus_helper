@@ -81,8 +81,13 @@ func fixName(tag string) string {
 }
 
 //
-func fmtGaugeName(interfaceName string, tag string) string {
-	return fmt.Sprintf("%s_%s", strings.ToLower(interfaceName), strings.ToLower(fixName(tag)))
+func fmtGaugeName(interfaceName string, key string, value TagValue) string {
+	// Try to use the tag name first as that tends to produce more attractive names
+	baseName := value.Tag
+	if len(baseName) == 0 {
+		baseName = key
+	}
+	return fmt.Sprintf("%s_%s", strings.ToLower(interfaceName), strings.ToLower(fixName(baseName)))
 }
 
 //
@@ -125,13 +130,7 @@ func NewGaugeMap(meta StructMeta, namespace string, constLabels prometheus.Label
 
 	for key, value := range meta.Data {
 
-		// Try to use the tag name first
-		baseName := value.Tag
-		if len(baseName) == 0 {
-			baseName = key
-		}
-
-		gaugeName := fmtGaugeName(meta.Name, baseName)
+		gaugeName := fmtGaugeName(meta.Name, key, value)
 
 		gauge := NewGauge(
 			namespace,
@@ -153,13 +152,8 @@ func NewGaugeVecMap(meta StructMeta, namespace string, labels []string, constLab
 	metrics := GaugeVecMap{}
 
 	for key, value := range meta.Data {
-		// Try to use the tag name first
-		baseName := value.Tag
-		if len(baseName) == 0 {
-			baseName = key
-		}
 
-		gaugeName := fmtGaugeName(meta.Name, baseName)
+		gaugeName := fmtGaugeName(meta.Name, key, value)
 
 		gauge := NewGaugeVec(
 			namespace,
@@ -171,4 +165,82 @@ func NewGaugeVecMap(meta StructMeta, namespace string, labels []string, constLab
 	}
 
 	return metrics
+}
+
+func SetValuesOnGauges(meta StructMeta, namespace string, gaugeMap GaugeMap) {
+	for key, value := range meta.Data {
+		flt, err := ConvertToFloat(value)
+		if err == nil {
+			gaugeName := fmtGaugeName(meta.Name, key, value)
+			if gauge, ok := gaugeMap[namespace+"_"+gaugeName]; ok {
+				gauge.Set(flt)
+			}
+		}
+	}
+}
+
+func SetValuesOnGaugeVecs(meta StructMeta, namespace string, gaugeVecMap GaugeVecMap, labels prometheus.Labels) {
+	for key, value := range meta.Data {
+		flt, err := ConvertToFloat(value)
+		if err == nil {
+			gaugeName := fmtGaugeName(meta.Name, key, value)
+			if gauge, ok := gaugeVecMap[namespace+"_"+gaugeName]; ok {
+				gauge.With(labels).Set(flt)
+			}
+		}
+	}
+}
+
+//
+func CollectGaugeMap(gaugeMap GaugeMap, ch chan<- prometheus.Metric) {
+	for _, metric := range gaugeMap {
+		metric.Collect(ch)
+	}
+}
+
+//
+func CollectGaugeVecMaps(gaugeVecMaps map[string]GaugeVecMap, ch chan<- prometheus.Metric) {
+	for _, gaugeVec := range gaugeVecMaps {
+		for _, metric := range gaugeVec {
+			metric.Collect(ch)
+		}
+	}
+}
+
+//
+func DescribeGaugeMap(gaugeMap GaugeMap, ch chan<- *prometheus.Desc) {
+	for _, metric := range gaugeMap {
+		metric.Describe(ch)
+	}
+}
+
+//
+func DescribeGaugeVecMaps(gaugeVecMaps map[string]GaugeVecMap, ch chan<- *prometheus.Desc) {
+	for _, gaugeVec := range gaugeVecMaps {
+		for _, metric := range gaugeVec {
+			metric.Describe(ch)
+		}
+	}
+}
+
+var floatType = reflect.TypeOf(float64(0))
+
+func ConvertToFloat(unk interface{}) (float64, error) {
+	v := reflect.ValueOf(unk)
+	v = reflect.Indirect(v)
+
+	// Why not supported by the language?
+	if v.Type().Name() == "bool" {
+		if v.Bool() {
+			return 1, nil
+		} else {
+			return 0, nil
+		}
+	}
+
+	if !v.Type().ConvertibleTo(floatType) {
+		return 0, fmt.Errorf("cannot convert %v to float64", v.Type())
+	}
+	fv := v.Convert(floatType)
+	return fv.Float(), nil
 }
