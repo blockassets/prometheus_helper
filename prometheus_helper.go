@@ -120,6 +120,9 @@ func NewGaugeVec(namespace string, metricName string, help string, constLabels p
 
 type GaugeMap map[string]prometheus.Gauge
 type GaugeVecMap map[string]prometheus.GaugeVec
+// I must be insane.
+type GaugeMapMap map[string]GaugeMap
+type GaugeVecMapMap map[string]GaugeVecMap
 
 /*
 	Builds a map of Gauges, the names are built out of the struct property names.
@@ -199,9 +202,18 @@ func CollectGaugeMap(gaugeMap GaugeMap, ch chan<- prometheus.Metric) {
 }
 
 //
-func CollectGaugeVecMaps(gaugeVecMaps map[string]GaugeVecMap, ch chan<- prometheus.Metric) {
-	for _, gaugeVec := range gaugeVecMaps {
-		for _, metric := range gaugeVec {
+func CollectGaugeMapMap(gaugeMapMap GaugeMapMap, ch chan<- prometheus.Metric) {
+	for _, gaugeMap := range gaugeMapMap {
+		for _, metric := range gaugeMap {
+			metric.Collect(ch)
+		}
+	}
+}
+
+//
+func CollectGaugeVecMapMap(gaugeVecMapMap GaugeVecMapMap, ch chan<- prometheus.Metric) {
+	for _, gaugeVecMap := range gaugeVecMapMap {
+		for _, metric := range gaugeVecMap {
 			metric.Collect(ch)
 		}
 	}
@@ -215,9 +227,18 @@ func DescribeGaugeMap(gaugeMap GaugeMap, ch chan<- *prometheus.Desc) {
 }
 
 //
-func DescribeGaugeVecMaps(gaugeVecMaps map[string]GaugeVecMap, ch chan<- *prometheus.Desc) {
-	for _, gaugeVec := range gaugeVecMaps {
-		for _, metric := range gaugeVec {
+func DescribeGaugeMapMap(gaugeMapMap GaugeMapMap, ch chan<- *prometheus.Desc) {
+	for _, gaugeMap := range gaugeMapMap {
+		for _, metric := range gaugeMap {
+			metric.Describe(ch)
+		}
+	}
+}
+
+//
+func DescribeGaugeVecMapMap(gaugeVecMapMap GaugeVecMapMap, ch chan<- *prometheus.Desc) {
+	for _, gaugeVecMap := range gaugeVecMapMap {
+		for _, metric := range gaugeVecMap {
 			metric.Describe(ch)
 		}
 	}
