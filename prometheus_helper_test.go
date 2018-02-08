@@ -9,15 +9,15 @@ type MapInt64 map[string]int64
 type ChipStat struct {
 	DevCommon
 	Accept MapInt64
-	Funny int64 `json:"Funny"`
+	Funny  int64 `json:"Funny"`
 }
 
 type DevCommon struct {
-	Name string `json:"Name,string"`
-	ASC  int    `json:"ASC"`
-	ID   int    `json:"ID"`
-	BigName int `json:"This is a big name"`
-	Jon int
+	Name    string `json:"Name,string"`
+	ASC     int    `json:"ASC"`
+	ID      int    `json:"ID"`
+	BigName int    `json:"This is a big name"`
+	Jon     int
 }
 
 func TestMakeStructMeta(t *testing.T) {
@@ -25,10 +25,10 @@ func TestMakeStructMeta(t *testing.T) {
 	chipStat := ChipStat{
 		DevCommon: DevCommon{
 			Name: "ttsy1",
-			Jon: 456,
+			Jon:  456,
 		},
 		Accept: MapInt64{"Jon": 123, "mat": 567},
-		Funny: 1234,
+		Funny:  1234,
 	}
 
 	MakeStructMeta(chipStat, &meta)
@@ -54,10 +54,10 @@ func TestNewGaugeMap(t *testing.T) {
 	chipStat := ChipStat{
 		DevCommon: DevCommon{
 			Name: "ttsy1",
-			Jon: 456,
+			Jon:  456,
 		},
 		Accept: MapInt64{"Jon": 123, "mat": 567, "funky %": 999, "1_accept": 3333},
-		Funny: 1234,
+		Funny:  1234,
 	}
 	meta := StructMeta{}
 	MakeStructMeta(chipStat, &meta)
@@ -78,10 +78,10 @@ func TestNewGaugeVecMap(t *testing.T) {
 	chipStat := ChipStat{
 		DevCommon: DevCommon{
 			Name: "ttsy1",
-			Jon: 456,
+			Jon:  456,
 		},
 		Accept: MapInt64{"Jon": 123, "mat": 567, "funky %": 999, "1_accept": 3333},
-		Funny: 1234,
+		Funny:  1234,
 	}
 	meta := StructMeta{}
 	MakeStructMeta(chipStat, &meta)

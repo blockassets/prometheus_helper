@@ -1,9 +1,10 @@
 package prometheus_helper
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
-	"fmt"
+
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -13,7 +14,7 @@ type StructMeta struct {
 }
 
 type TagValue struct {
-	Tag string // The parsed tag string `json:"Foo,string"` == Foo
+	Tag   string      // The parsed tag string `json:"Foo,string"` == Foo
 	Value interface{} // The value of the field in the struct
 }
 
@@ -118,7 +119,7 @@ type GaugeVecMap map[string]prometheus.GaugeVec
 /*
 	Builds a map of Gauges, the names are built out of the struct property names.
 	Looking first to see if there is a json tag name and if not, grab an actual name.
- */
+*/
 func NewGaugeMap(meta StructMeta, namespace string, constLabels prometheus.Labels) GaugeMap {
 	metrics := GaugeMap{}
 
@@ -138,7 +139,7 @@ func NewGaugeMap(meta StructMeta, namespace string, constLabels prometheus.Label
 			fmtGaugeDescription(meta.Name, key),
 			constLabels)
 
-		metrics[namespace + "_" + gaugeName] = gauge
+		metrics[namespace+"_"+gaugeName] = gauge
 	}
 
 	return metrics
@@ -147,7 +148,7 @@ func NewGaugeMap(meta StructMeta, namespace string, constLabels prometheus.Label
 /*
 	Builds a map of Gauges, the names are built out of the struct property names.
 	Looking first to see if there is a json tag name and if not, grab an actual name.
- */
+*/
 func NewGaugeVecMap(meta StructMeta, namespace string, labels []string, constLabels prometheus.Labels) GaugeVecMap {
 	metrics := GaugeVecMap{}
 
@@ -166,7 +167,7 @@ func NewGaugeVecMap(meta StructMeta, namespace string, labels []string, constLab
 			fmtGaugeDescription(meta.Name, key),
 			constLabels, labels)
 
-		metrics[namespace + "_" + gaugeName] = gauge
+		metrics[namespace+"_"+gaugeName] = gauge
 	}
 
 	return metrics
