@@ -47,6 +47,11 @@ type TagValue struct {
 func MakeStructMeta(strct interface{}, meta *StructMeta) {
 	val := reflect.ValueOf(strct)
 
+	// Skip any Maps passed in
+	if val.Kind() == reflect.Map {
+		return
+	}
+
 	if len(meta.Name) == 0 {
 		meta.Name = val.Type().Name()
 		meta.Data = make(map[string]TagValue)
