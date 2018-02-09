@@ -13,6 +13,24 @@ type StructMeta struct {
 	Data map[string]TagValue
 }
 
+/*
+	Key: FieldName
+	Value: FieldValue
+
+	type PoolData struct {
+		User    User    `json:"user"`
+		Workers Workers `json:"workers"`
+		Pool    Pool    `json:"pool"`
+		Network Network `json:"network"`
+		Market  Market  `json:"market"`
+	}
+
+	map["User"] = User
+	map["Workers"] = Workers
+	...
+ */
+type StructFieldMap map[string]interface{}
+
 type TagValue struct {
 	Tag   string      // The parsed tag string `json:"Foo,string"` == Foo
 	Value interface{} // The value of the field in the struct
@@ -70,6 +88,22 @@ func MakeStructMeta(strct interface{}, meta *StructMeta) {
 			}
 		}
 	}
+}
+
+func MakeStructFieldMap(strct interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
+	val := reflect.ValueOf(strct)
+	numFields := val.NumField()
+
+	for i := 0; i < numFields; i++ {
+		field := val.Field(i)
+		fieldInterface := field.Interface()
+		structField := val.Type().Field(i)
+
+		result[structField.Name] = fieldInterface
+	}
+
+	return result
 }
 
 func fixName(tag string) string {

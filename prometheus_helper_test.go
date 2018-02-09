@@ -97,3 +97,20 @@ func TestNewGaugeVecMap(t *testing.T) {
 		t.Error("Key not found: jon_chipstat_funky_percent")
 	}
 }
+
+type PoolData struct {
+	User    string
+	Workers string
+}
+
+func TestMakeStructFieldMap(t *testing.T) {
+	pd := PoolData{
+		User: "jon",
+		Workers: "bar",
+	}
+
+	response := MakeStructFieldMap(pd)
+	if _, ok := response["User"]; !ok {
+		t.Error("User not found in PoolData")
+	}
+}
