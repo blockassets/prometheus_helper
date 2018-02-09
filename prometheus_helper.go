@@ -172,8 +172,10 @@ func NewGaugeVecMap(meta StructMeta, namespace string, labels []string, constLab
 
 func SetValuesOnGauges(meta StructMeta, namespace string, gaugeMap GaugeMap) {
 	for key, value := range meta.Data {
-		flt, err := ConvertToFloat(value)
-		if err == nil {
+		flt, err := ConvertToFloat(value.Value)
+		if err != nil {
+			fmt.Println("Error converting %s->%s : %v to float", meta.Name, key, value.Value)
+		} else {
 			gaugeName := fmtGaugeName(meta.Name, key, value)
 			if gauge, ok := gaugeMap[namespace+"_"+gaugeName]; ok {
 				gauge.Set(flt)
@@ -184,8 +186,10 @@ func SetValuesOnGauges(meta StructMeta, namespace string, gaugeMap GaugeMap) {
 
 func SetValuesOnGaugeVecs(meta StructMeta, namespace string, gaugeVecMap GaugeVecMap, labels prometheus.Labels) {
 	for key, value := range meta.Data {
-		flt, err := ConvertToFloat(value)
-		if err == nil {
+		flt, err := ConvertToFloat(value.Value)
+		if err != nil {
+			fmt.Println("Error converting %s->%s : %v to float", meta.Name, key, value.Value)
+		} else {
 			gaugeName := fmtGaugeName(meta.Name, key, value)
 			if gauge, ok := gaugeVecMap[namespace+"_"+gaugeName]; ok {
 				gauge.With(labels).Set(flt)
