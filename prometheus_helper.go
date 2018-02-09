@@ -95,8 +95,11 @@ func MakeStructMeta(strct interface{}, meta *StructMeta) {
 	}
 }
 
-func MakeStructFieldMap(strct interface{}) map[string]interface{} {
-	result := make(map[string]interface{})
+/*
+	See documentation for StructFieldMap
+ */
+func MakeStructFieldMap(strct interface{}) StructFieldMap {
+	result := StructFieldMap{}
 	val := reflect.ValueOf(strct)
 	numFields := val.NumField()
 
