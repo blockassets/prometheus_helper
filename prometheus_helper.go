@@ -158,6 +158,22 @@ type GaugeVecMap map[string]prometheus.GaugeVec
 type GaugeMapMap map[string]GaugeMap
 type GaugeVecMapMap map[string]GaugeVecMap
 
+
+/*
+	Prometheus won't start up if there are no Gauges defined, so provide a helper to build the MapMap.
+ */
+func NewGaugeMapMap(faces map[string]interface{}, namespace string, constLabels prometheus.Labels) GaugeMapMap {
+	gmm := make(GaugeMapMap)
+	for _, iface := range faces {
+		meta := StructMeta{}
+		MakeStructMeta(iface, &meta)
+		if _, ok := gmm[meta.Name]; !ok {
+			gmm[meta.Name] = NewGaugeMap(meta, namespace, constLabels)
+		}
+	}
+	return gmm
+}
+
 /*
 	Builds a map of Gauges, the names are built out of the struct property names.
 	Looking first to see if there is a json tag name and if not, grab an actual name.
