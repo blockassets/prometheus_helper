@@ -114,6 +114,15 @@ func MakeStructFieldMap(strct interface{}) StructFieldMap {
 	return result
 }
 
+func CollectGaugeVecs(name string, value interface{}, vecMapMap GaugeVecMapMap, namespace string, constLabels prometheus.Labels, labelNames []string, labelValues prometheus.Labels) {
+	meta := StructMeta{}
+	MakeStructMeta(value, &meta)
+	if _, ok := vecMapMap[name]; !ok {
+		vecMapMap[name] = NewGaugeVecMap(meta, namespace, labelNames, constLabels)
+	}
+	SetValuesOnGaugeVecs(meta, namespace, vecMapMap[name], labelValues)
+}
+
 func fixName(tag string) string {
 	// Order matters
 	r := strings.Replace(tag, " %", " percent", -1)
