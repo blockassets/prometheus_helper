@@ -114,3 +114,30 @@ func TestNewStructFieldMap(t *testing.T) {
 		t.Error("User not found in PoolData")
 	}
 }
+
+func TestConvertToFloat(t *testing.T) {
+	val, err := ConvertToFloat("Y")
+	if err != nil || val != 1 {
+		t.Fatalf("Failed to convert Y to 1")
+	}
+
+	val, err = ConvertToFloat("y")
+	if err != nil || val != 1 {
+		t.Fatalf("Failed to convert y to 1")
+	}
+
+	val, err = ConvertToFloat("n")
+	if err != nil || val != 0 {
+		t.Fatalf("Failed to convert n to 0")
+	}
+
+	val, err = ConvertToFloat("Alive")
+	if err != nil || val != 1 {
+		t.Fatalf("Failed to convert Alive to 1")
+	}
+
+	val, err = ConvertToFloat(true)
+	if err != nil || val != 1 {
+		t.Fatalf("Failed to convert true to 1")
+	}
+}

@@ -318,17 +318,28 @@ func DescribeGaugeVecMapMap(gaugeVecMapMap GaugeVecMapMap, ch chan<- *prometheus
 
 var floatType = reflect.TypeOf(float64(0))
 
+/*
+	A smarter version of the function for conversion of interface to float
+	than Type.ConvertibleTo()
+ */
 func ConvertToFloat(unk interface{}) (float64, error) {
 	v := reflect.ValueOf(unk)
-	v = reflect.Indirect(v)
 
 	// Why not supported by the language?
-	if v.Type().Name() == "bool" {
+	if v.Kind() == reflect.Bool {
 		if v.Bool() {
 			return 1, nil
 		} else {
 			return 0, nil
 		}
+	}
+
+	if v.Kind() == reflect.String {
+		str := strings.ToLower(v.String())
+		if str == "true" || str == "1" || str == "y" || str == "alive" {
+			return 1, nil
+		}
+		return 0, nil
 	}
 
 	if !v.Type().ConvertibleTo(floatType) {
