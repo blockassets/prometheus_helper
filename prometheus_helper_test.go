@@ -109,7 +109,7 @@ func TestMakeStructFieldMap(t *testing.T) {
 		Workers: "bar",
 	}
 
-	response := MakeStructFieldMap(pd)
+	response := NewStructFieldMap(pd)
 	if _, ok := response["User"]; !ok {
 		t.Error("User not found in PoolData")
 	}
