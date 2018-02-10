@@ -103,7 +103,7 @@ type PoolData struct {
 	Workers string
 }
 
-func TestMakeStructFieldMap(t *testing.T) {
+func TestNewStructFieldMap(t *testing.T) {
 	pd := PoolData{
 		User: "jon",
 		Workers: "bar",
