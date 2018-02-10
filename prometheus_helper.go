@@ -65,6 +65,7 @@ func MakeStructMeta(strct interface{}, meta *StructMeta) {
 		fieldInterface := field.Interface()
 
 		if fieldKind == reflect.Struct {
+			// recursive call to ourselves
 			MakeStructMeta(fieldInterface, meta)
 		} else {
 			structField := val.Type().Field(i)
