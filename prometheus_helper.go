@@ -291,9 +291,7 @@ func CollectGaugeMap(gaugeMap GaugeMap, ch chan<- prometheus.Metric) {
 //
 func CollectGaugeMapMap(gaugeMapMap GaugeMapMap, ch chan<- prometheus.Metric) {
 	for _, gaugeMap := range gaugeMapMap {
-		for _, metric := range gaugeMap {
-			metric.Collect(ch)
-		}
+		CollectGaugeMap(gaugeMap, ch)
 	}
 }
 
@@ -316,9 +314,7 @@ func DescribeGaugeMap(gaugeMap GaugeMap, ch chan<- *prometheus.Desc) {
 //
 func DescribeGaugeMapMap(gaugeMapMap GaugeMapMap, ch chan<- *prometheus.Desc) {
 	for _, gaugeMap := range gaugeMapMap {
-		for _, metric := range gaugeMap {
-			metric.Describe(ch)
-		}
+		DescribeGaugeMap(gaugeMap, ch)
 	}
 }
 
