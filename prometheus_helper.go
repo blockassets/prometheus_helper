@@ -69,7 +69,16 @@ func MakeStructMeta(strct interface{}, meta *StructMeta) {
 			MakeStructMeta(fieldInterface, meta)
 		} else {
 			structField := val.Type().Field(i)
-			tag := strings.Split(structField.Tag.Get("json"), ",")[0]
+			jsonValues := strings.Split(structField.Tag.Get("json"), ",")
+			if len(jsonValues) > 1 {
+				for _, jv := range jsonValues {
+					// special case values we don't want to have gauges for
+					if jv == "omit" {
+						return
+					}
+				}
+			}
+			tag := jsonValues[0]
 
 			tagValue := TagValue{
 				Tag: tag,
