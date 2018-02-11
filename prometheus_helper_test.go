@@ -10,6 +10,7 @@ type ChipStat struct {
 	DevCommon
 	Accept MapInt64
 	Funny  int64 `json:"Funny"`
+	Ignored  string `json:"Ignored,omit"`
 }
 
 type DevCommon struct {
@@ -29,6 +30,7 @@ func TestMakeStructMeta(t *testing.T) {
 		},
 		Accept: MapInt64{"Jon": 123, "mat": 567},
 		Funny:  1234,
+		Ignored: "not here",
 	}
 
 	MakeStructMeta(chipStat, &meta)
