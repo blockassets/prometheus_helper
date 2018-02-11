@@ -347,8 +347,11 @@ func ConvertToFloat(unk interface{}) (float64, error) {
 		str := strings.ToLower(v.String())
 		if str == "true" || str == "1" || str == "y" || str == "alive" {
 			return 1, nil
+		} else if str == "false" || str == "0" || str == "n" || str == "dead" {
+			return 0, nil
+		} else {
+			return 0, fmt.Errorf("cannot convert string %s to float64", v.String())
 		}
-		return 0, nil
 	}
 
 	if !v.Type().ConvertibleTo(floatType) {
