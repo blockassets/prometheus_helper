@@ -70,14 +70,20 @@ func MakeStructMeta(strct interface{}, meta *StructMeta) {
 		} else {
 			structField := val.Type().Field(i)
 			jsonValues := strings.Split(structField.Tag.Get("json"), ",")
+
+			foundOmit := false
 			if len(jsonValues) > 1 {
 				for _, jv := range jsonValues {
 					// special case values we don't want to have gauges for
 					if jv == "omit" {
-						return
+						foundOmit = true
 					}
 				}
 			}
+			if foundOmit {
+				continue
+			}
+
 			tag := jsonValues[0]
 
 			tagValue := TagValue{
