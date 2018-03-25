@@ -257,7 +257,7 @@ func SetValuesOnGauges(meta StructMeta, namespace string, gaugeMap GaugeMap) {
 	for key, value := range meta.Data {
 		flt, err := ConvertToFloat(value.Value)
 		if err != nil {
-			fmt.Println("Error converting %s->%s : %v to float", meta.Name, key, value.Value)
+			fmt.Printf("Error converting %s->%s : %v to float\n", meta.Name, key, value.Value)
 		} else {
 			gaugeName := fmtGaugeName(meta.Name, key, value)
 			if gauge, ok := gaugeMap[namespace+"_"+gaugeName]; ok {
@@ -271,7 +271,7 @@ func SetValuesOnGaugeVecs(meta StructMeta, namespace string, gaugeVecMap GaugeVe
 	for key, value := range meta.Data {
 		flt, err := ConvertToFloat(value.Value)
 		if err != nil {
-			fmt.Println("Error converting %s->%s : %v to float", meta.Name, key, value.Value)
+			fmt.Printf("Error converting %s->%s : %v to float\n", meta.Name, key, value.Value)
 		} else {
 			gaugeName := fmtGaugeName(meta.Name, key, value)
 			if gauge, ok := gaugeVecMap[namespace+"_"+gaugeName]; ok {
