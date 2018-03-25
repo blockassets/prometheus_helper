@@ -8,9 +8,9 @@ type MapInt64 map[string]int64
 
 type ChipStat struct {
 	DevCommon
-	Accept MapInt64
-	Funny  int64 `json:"Funny"`
-	Ignored  string `json:"Ignored,omit"`
+	Accept  MapInt64
+	Funny   int64  `json:"Funny"`
+	Ignored string `json:"Ignored,omit"`
 }
 
 type DevCommon struct {
@@ -28,8 +28,8 @@ func TestMakeStructMeta(t *testing.T) {
 			Name: "ttsy1",
 			Jon:  456,
 		},
-		Accept: MapInt64{"Jon": 123, "mat": 567},
-		Funny:  1234,
+		Accept:  MapInt64{"Jon": 123, "mat": 567},
+		Funny:   1234,
 		Ignored: "not here",
 	}
 
@@ -107,7 +107,7 @@ type PoolData struct {
 
 func TestNewStructFieldMap(t *testing.T) {
 	pd := PoolData{
-		User: "jon",
+		User:    "jon",
 		Workers: "bar",
 	}
 
