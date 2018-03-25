@@ -28,7 +28,7 @@ type StructMeta struct {
 	map["User"] = User
 	map["Workers"] = Workers
 	...
- */
+*/
 type StructFieldMap map[string]interface{}
 
 type TagValue struct {
@@ -113,7 +113,7 @@ func MakeStructMeta(strct interface{}, meta *StructMeta) {
 
 /*
 	See documentation for StructFieldMap
- */
+*/
 func NewStructFieldMap(strct interface{}) StructFieldMap {
 	result := StructFieldMap{}
 	val := reflect.ValueOf(strct)
@@ -187,14 +187,14 @@ func NewGaugeVec(namespace string, metricName string, help string, constLabels p
 
 type GaugeMap map[string]prometheus.Gauge
 type GaugeVecMap map[string]prometheus.GaugeVec
+
 // I must be insane.
 type GaugeMapMap map[string]GaugeMap
 type GaugeVecMapMap map[string]GaugeVecMap
 
-
 /*
 	Prometheus won't start up if there are no Gauges defined, so provide a helper to build the MapMap.
- */
+*/
 func NewGaugeMapMap(faces map[string]interface{}, namespace string, constLabels prometheus.Labels) GaugeMapMap {
 	gmm := make(GaugeMapMap)
 	for _, iface := range faces {
@@ -332,7 +332,7 @@ var floatType = reflect.TypeOf(float64(0))
 /*
 	A smarter version of the function for conversion of interface to float
 	than Type.ConvertibleTo()
- */
+*/
 func ConvertToFloat(unk interface{}) (float64, error) {
 	v := reflect.ValueOf(unk)
 
