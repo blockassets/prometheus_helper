@@ -36,7 +36,7 @@ func TestMakeStructMeta(t *testing.T) {
 	MakeStructMeta(chipStat, &meta)
 
 	if len(meta.Data) != 7 {
-		t.Errorf("Length is wrong, expected 7 and got %s", len(meta.Data))
+		t.Errorf("Length is wrong, expected 7 and got %v", len(meta.Data))
 	}
 
 	if meta.Data["Name"].Value != "ttsy1" {
