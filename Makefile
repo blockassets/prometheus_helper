@@ -7,4 +7,7 @@ dep:
 test:
 	@go test .
 
+fmt:
+	gofmt -s -w .
+
 all: clean test build
